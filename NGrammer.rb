@@ -2,15 +2,15 @@ require 'csv'
 
 class NGrammer
 
-  def initialize(wordlist_path, alphabet, blacklist_path = nil, encoding = 'UTF-8')
+  def initialize(wordlist_path, alphabet, blocklist_path = nil, encoding = 'UTF-8')
     @ngrams        = {}
     @alphabet      = alphabet
     @percentages   = {}
     @wordlist_path = wordlist_path
     @encoding      = encoding
-    @blacklist     = []
-    if blacklist_path
-      @blacklist = new_blacklist(blacklist_path)
+    @blocklist     = []
+    if blocklist_path
+      @blocklist = new_blocklist(blocklist_path)
     end
   end
 
@@ -69,8 +69,8 @@ class NGrammer
         next
       end
 
-      # That's not in blacklist.
-      if @blacklist.include? line[0..end_position]
+      # That's not in blocklist.
+      if @blocklist.include? line[0..end_position]
         next
       end
 
@@ -118,16 +118,16 @@ class NGrammer
     @percentages
   end
 
-  private def new_blacklist(blacklist_path)
-    # Get blacklisted words.
-    blacklist = []
-    CSV.foreach(blacklist_path) do |row|
-      blacklist << row[0]
+  private def new_blocklist(blocklist_path)
+    # Get blocklisted words.
+    blocklist = []
+    CSV.foreach(blocklist_path) do |row|
+      blocklist << row[0]
     end
-    # Remove header from blacklist.
-    blacklist.shift
-    # Return blacklist.
-    blacklist
+    # Remove header from blocklist.
+    blocklist.shift
+    # Return blocklist.
+    blocklist
   end
 
   # Display ngrams.

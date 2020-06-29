@@ -2,12 +2,11 @@ require 'csv'
 require "lemmatizer"
 
 ################################################################################
-# ClEAN
+# ClEANER
 #
-# Features:
-# - Downcase words.
-# - Reduce duplicate words.
-# - Prune word variations.
+# - Downcases words.
+# - Removes duplicate words.
+# - Prunes word variations using lemmatization.
 #
 # See:
 # - http://wordlist.aspell.net/12dicts-readme/#223lem
@@ -16,10 +15,11 @@ require "lemmatizer"
 
 class Cleaner
 
-  def initialize(wordlist_path, names_path = nil, encoding = 'UTF-8')
+  def initialize(wordlist_path, blocklist_path = nil, encoding = 'UTF-8')
     @wordlist_path = wordlist_path
     @encoding      = encoding
-    @lem           = Lemmatizer.new
+    # Create Lemmatizer.
+    @lemmatizer    = Lemmatizer.new
     # Store cleaned words.
     @words         = {}
     # Track words chomped.
@@ -28,7 +28,7 @@ class Cleaner
     @suffixes      = {}
     # Original words.
     @index         = index(wordlist_path)
-    @names         = get_names(names_path)
+    @blocked_words = get_names(blocklist_path)
   end
 
   # Index original words so can reference them later.
@@ -82,14 +82,14 @@ class Cleaner
         end
       end
 
-      # Remove names.
-      if is_name? word
+      # Remove blocked words.
+      if is_blocked? word
         next
       end
 
       # Lemmatize.
       unless lemmatize_disabled || (exceptions.include? word)
-        word = @lem.lemma(word)
+        word = @lemmatizer.lemma(word)
       end
 
       # Add word if not a duplicate.
@@ -100,19 +100,19 @@ class Cleaner
 
   end
 
-  def is_name? word
+  def is_blocked? word
     # Is it a name?
-    if @names[word]
+    if @blocked_words[word]
       return true
     end
     false
   end
 
-  def get_names(names_path)
-    return {} if names_path == nil
+  def get_names(blocklist_path)
+    return {} if blocklist_path == nil
 
     names = {}
-    CSV.foreach(names_path) do |row|
+    CSV.foreach(blocklist_path) do |row|
       name = row[0].downcase
       names[name] = true
     end
