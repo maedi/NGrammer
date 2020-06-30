@@ -9,7 +9,7 @@ require_relative '../NGrammer'
 # EXAMPLE SCRIPT
 #
 # An example script that can be executed on the command line:
-# > ruby "Examples/Script.rb"
+# > ruby "Examples/Commandline.rb"
 #
 # File paths are relative to NGrammer.rb in the project root.
 ################################################################################
@@ -24,23 +24,22 @@ allowlist_path = 'Allowlists/en/suffixes.csv'
 
 # Ensure ngrams fit into a standard alphabet.
 alphabet = Alphabet.new()
+alpha = alphabet.english
 
 ####
 # NGRAMS
 ####
 
 # Create ngrams.
-ngrams = NGrammer.new(wordlist_path, alphabet.english, 'Blocklists/en/ngrams.csv')
+ngrams = NGrammer.new(wordlist_path, alpha, 'Blocklists/en/ngrams.csv')
 ngrams.process(3)
 ngrams.sort
 ngrams.display
 
 # Filter ngrams by letter distribution then sort by alphabet.
-#ngrams_distro = Distribution.new()
-#ngrams_distro.alphabetically(unigrams, ngrams, 536)
-
-# Show results.
-#ngrams_distro.display
+ngrams_distro = Distribution.new(alpha)
+ngrams_distro.alphabetically(ngrams, 536)
+ngrams_distro.display
 
 ####
 # OPTIONAL
