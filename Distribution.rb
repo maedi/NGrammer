@@ -3,9 +3,9 @@ require 'terminal-table'
 
 class Distribution
 
-  def initialize()
+  def initialize(alphabet)
     # Store the resulting distribution, grouped by unigram.
-    @distribution = {}
+    @distribution = alphabet
     # The percentage of the ngrams relative to the whole.
     @percentages = {}
     # The amount of ngrams to have per category.
@@ -39,19 +39,16 @@ class Distribution
   # @param NGram $trigrams: The ngrams to group.
   # @param integer $quantity: The quantity of resulting ngrams.
   #
-  def alphabetically(unigrams, trigrams, quantity)
-
-    # Create an alphabet.
-    @distribution = unigrams.get_alphabet
+  def alphabetically(ngrams, quantity)
 
     # Get percentages of unigrams relative to whole.
-    @percentages = unigrams.create_percentages
+    @percentages = ngrams.create_percentages
 
     # Get quantity of ngrams based on distribution.
     @quantities = create_quantities(@percentages, quantity)
 
     # With quantites in hand distribute ngrams.
-    distribute(trigrams)
+    distribute(ngrams)
 
   end
 
