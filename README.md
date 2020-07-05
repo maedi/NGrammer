@@ -17,18 +17,17 @@ gem install csv lemmatizer terminal-table
 Create an NGrammer object with:
 ```
 alphabet = Alphabet.new()
-ngrammer = NGrammer.new(wordlist_path, alphabet.english)
+ngrammer = NGrammer.new(wordlist_path, alphabet.english, blocklist_path)
 ```
 
 Then call the following methods on it:
 
 #### process()
 
-Process the data.
+Process the data, where `ngram_length` is the number of letters in the ngram.
 ```
 ngrammer.process(ngram_length)
 ```
-**ngram_length:** The amount of letters in the ngram.
 
 #### display()
 
@@ -44,11 +43,55 @@ Export the processed data to CSV.
 ngrammer.export
 ```
 
+## Example
+
+Input:
+```
+ngrammer = NGrammer.new(wordlist_path, alpha, 'Blocklists/en/ngrams.csv')
+ngrammer.process(3)
+ngrammer.sort
+ngrammer.display(5)
+```
+
+Output:
+```
+$ ruby Examples/Commandline.rb
+con (248) (1.67%)
+pro (160) (1.08%)
+com (141) (0.95%)
+dis (126) (0.85%)
+pre (111) (0.75%)
+```
+
 ## API
 
 ### NGrammer
 
-Creates ngrams from wordlists and shows their distribution.
+You access the API through an instance of `NGrammer`.
+
+#### new()
+
+````
+ngrams = NGrammer.new(wordlist_path, alpha, 'Blocklists/en/ngrams.csv')
+````
+
+#### process()
+
+````
+ngrammer.process(3)
+````
+
+#### sort()
+
+````
+ngrammer.sort
+````
+
+#### display()
+
+````
+ngrammer.display(5)
+````
 
 #### add_words()
 
@@ -59,11 +102,26 @@ ngrammer.add_words(['bento', 'behemoth', 'cahoots'])
 
 ### Cleaner
 
-Cleans wordlists.
+Cleans wordlists by lowercasing words, removing duplicates and pruning variations.
+
+#### new()
+```
+cleaner = Cleaner.new(wordlist_path, blocklist_path)
+```
+
+#### process()
+```
+cleaner.process(allowlist_path)
+```
+
+#### export()
+```
+cleaner.export(cleaned_path)
+```
 
 ### Alphabet
 
-Represents an alphabet of letters and their quantities.
+Represents an alphabet of letters and their quantities. Data model that doesn't need to be interacted with directly.
 
 ### Distribution
 

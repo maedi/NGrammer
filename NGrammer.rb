@@ -3,23 +3,25 @@ require 'csv'
 class NGrammer
 
   def initialize(wordlist_path, alphabet, blocklist_path = nil, encoding = 'UTF-8')
-    @ngrams        = {}
-    @alphabet      = alphabet
-    @percentages   = {}
     @wordlist_path = wordlist_path
+    @alphabet      = alphabet
     @encoding      = encoding
+    @ngrams        = {}
+    @percentages   = {}
     @blocklist     = []
     if blocklist_path
-      @blocklist = new_blocklist(blocklist_path)
+      @blocklist = get_blocklist(blocklist_path)
     end
   end
 
-  # Get ngrams.
-  def get
+  ####
+  # Getters.
+  ####
+
+  def get_ngrams
     @ngrams
   end
 
-  # Get alphabet.
   def get_alphabet
     @alphabet
   end
@@ -28,7 +30,10 @@ class NGrammer
     @percentages
   end
 
-  # Sort ngrams by occurence.
+  ####
+  # Sort ngrams by count.
+  ####
+
   def sort
     @ngrams = @ngrams.sort_by {|_key, value| value}.reverse.to_h
   end
@@ -37,15 +42,16 @@ class NGrammer
     @ngrams = @ngrams.sort_by {|_key, value| value}.to_h
   end
 
+  ####
   # Process words into ngrams.
   #
-  # @param integer $ngram_length: Number of characters in the ngram.
-  # @param hash    $parent_group: Shorter ngrams that shouldn't be extended.
-  # @param integer $parent_length: Number of characters in the shorter ngrams.
-  #
-  def process(ngram_length, parent_group = nil, parent_length = 0)
-    end_position = ngram_length - 1
-    end_position_parent = parent_length - 1
+  # @param integer $ngram_length: Number of letters in the ngram.
+  # @param integer $start_position: Where in the word to detect the ngram?
+  ####
+  def process(ngram_length, start_position = 0)
+
+    end_position = start_position + ngram_length - 1
+
     # For each word.
     File.foreach(@wordlist_path, encoding: @encoding) do |line|
       line = line.downcase
@@ -70,20 +76,12 @@ class NGrammer
       end
 
       # That's not in blocklist.
-      if @blocklist.include? line[0..end_position]
+      if @blocklist.include? line[start_position..end_position]
         next
       end
 
-      # That's not a child of parent.
-      if parent_group
-        child = line[0..end_position_parent]
-        if (parent_group.key? letter) && (parent_group[letter].key? child)
-          next
-        end
-      end
-
       # Create ngram.
-      ngram = line[0..end_position]
+      ngram = line[start_position..end_position]
       # Add ngram to its key
       if @ngrams.key? ngram
         @ngrams[ngram] = @ngrams[ngram] + 1
@@ -98,11 +96,12 @@ class NGrammer
 
   end
 
+  ####
   # Percentage of each ngram in the total.
   #
   # @param hash $ngrams: The ngrams to find distribution of.
   # @return hash @percentages:
-  #
+  ####
   def create_percentages()
     # Get total amount of ngrams.
     total_count = 0;
@@ -118,8 +117,8 @@ class NGrammer
     @percentages
   end
 
-  private def new_blocklist(blocklist_path)
-    # Get blocklisted words.
+  private def get_blocklist(blocklist_path)
+    # Get blocked words.
     blocklist = []
     CSV.foreach(blocklist_path) do |row|
       blocklist << row[0]
@@ -130,9 +129,20 @@ class NGrammer
     blocklist
   end
 
-  # Display ngrams.
-  def display
-    @ngrams.each do |ngram, count|
+  ####
+  # Display ngrams via the commandline.
+  #
+  # @param amount - The amount of results to show. Leave empty for all results.
+  ####
+  def display(amount = nil)
+    # Limit amount of results.
+    if (amount)
+      ngrams = @ngrams.first(amount)
+    else
+      ngrams = @ngrams
+    end
+    # Display ngrams.
+    ngrams.each do |ngram, count|
       percentage = ''
       unless @percentages[ngram].nil?
         percentage = " (" + (@percentages[ngram] * 100).round(2).to_s + "%)"
