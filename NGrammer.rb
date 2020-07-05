@@ -2,16 +2,20 @@ require 'csv'
 
 class NGrammer
 
-  def initialize(wordlist_path, alphabet, blocklist_path = nil, encoding = 'UTF-8')
-    @wordlist_path = wordlist_path
-    @alphabet      = alphabet
-    @encoding      = encoding
-    @ngrams        = {}
-    @percentages   = {}
-    @blocklist     = []
-    if blocklist_path
-      @blocklist = get_blocklist(blocklist_path)
+  def initialize(language, wordlist, blocklist = nil, allowlist = nil, encoding = 'UTF-8')
+    # Set alphabet.
+    @alphabet = Alphabet.new(language)
+    # Get wordlists.
+    @wordlist = wordlist
+    @blocklist = []
+    if blocklist
+      @blocklist = get_blocklist(blocklist)
     end
+    # Set encoding.
+    @encoding    = encoding
+    # Setup ngrams.
+    @ngrams      = {}
+    @percentages = {}
   end
 
   ####
@@ -53,7 +57,7 @@ class NGrammer
     end_position = start_position + ngram_length - 1
 
     # For each word.
-    File.foreach(@wordlist_path, encoding: @encoding) do |line|
+    File.foreach(@wordlist, encoding: @encoding) do |line|
       line = line.downcase
       letter = line[0]
 

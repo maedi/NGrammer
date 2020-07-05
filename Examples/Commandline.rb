@@ -22,16 +22,12 @@ wordlist_path  = 'Wordlists/en/maedi-15000/cleaned.txt'
 blocklist_path = 'Blocklists/en/names.csv'
 allowlist_path = 'Allowlists/en/suffixes.csv'
 
-# Ensure ngrams fit into a standard alphabet.
-alphabet = Alphabet.new()
-alpha = alphabet.english
-
 ####
 # NGRAMS
 ####
 
 # Create ngrams.
-ngrammer = NGrammer.new(wordlist_path, alpha, 'Blocklists/en/ngrams.csv')
+ngrammer = NGrammer.new(:english, wordlist_path, blocklist_path)
 ngrammer.process(3)
 ngrammer.sort
 ngrammer.display(10)
