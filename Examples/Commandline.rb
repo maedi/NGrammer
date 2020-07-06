@@ -27,7 +27,7 @@ allowlist_path = 'Allowlists/en/suffixes.csv'
 ####
 
 # Create ngrams.
-ngrammer = NGrammer.new(:english, wordlist_path, blocklist_path)
+ngrammer = NGrammer.new(:en, wordlist_path, blocklist_path)
 ngrammer.process(3)
 ngrammer.sort
 ngrammer.display(10)

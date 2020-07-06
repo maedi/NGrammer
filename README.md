@@ -2,9 +2,9 @@
 
 NGrammer creates ngrams from wordlists.
 
-**What are ngrams?** Ngrams are simply segments of words. For example "app" is an ngram inside apple, application and approachable. They can be any length.
+**What are n-grams?** N-grams are simply segments of words. For example "app" is an n-gram inside apple, application and approachable. They can be any length.
 
-**What are wordlists?** Wordlists are just a text file of line break separated words. They typically reach into the tens of thousands of lines. But that doesn't matter, NGrammer processes them super fast.
+**What are wordlists?** Wordlists are a text file of line break separated words. They typically reach into the tens of thousands of lines. But that doesn't matter, NGrammer processes them super fast.
 
 ## Setup
 
@@ -19,37 +19,20 @@ Create an NGrammer object with:
 ngrammer = NGrammer.new(:en, wordlist_path, blocklist_path)
 ```
 
-Then call the following methods on it:
+### process()
 
-#### process()
-
-Process the data, where `ngram_length` is the number of letters in the ngram.
+Process the data:
 ```ruby
-ngrammer.process(ngram_length)
+ngrammer.process(3) # Amount of letters in ngram.
 ```
 
-#### display()
+### display()
 
-Display the processed data in a terminal.
-```ruby
-ngrammer.display()
-```
-
-#### export()
-
-Export the processed data to CSV.
-```ruby
-ngrammer.export()
-```
-
-## Example
+Display the processed data in the terminal:
 
 **Input:**
 ```ruby
-ngrammer = NGrammer.new(:en, 'Wordlists/en/maedi-15000/cleaned.txt', 'Blocklists/en/ngrams.csv')
-ngrammer.process(3) # Amount of letters in ngram.
-ngrammer.sort # Order larger values first.
-ngrammer.display(5) # Show 5 results.
+ngrammer.display(5) # Number of results.
 ```
 
 **Output:**
@@ -59,6 +42,44 @@ pro (160) (1.08%)
 com (141) (0.95%)
 dis (126) (0.85%)
 pre (111) (0.75%)
+```
+
+Display alphabetically:
+
+**Input:**
+```ruby
+ngrammer.display(5, :alphabetically)
+```
+
+**Output:**
+```
++-----------+-----------+-----------+-----------+----------+-----------+-----------+-----------+-----------+-----------+----------+----------+-----------+
+| A (7.25%) | B (5.22%) | C (9.73%) | D (5.68%) | E (4.4%) | F (4.22%) | G (3.02%) | H (3.69%) | I (4.59%) | J (0.87%) | K (1.0%) | L (3.3%) | M (5.72%) |
++-----------+-----------+-----------+-----------+----------+-----------+-----------+-----------+-----------+-----------+----------+----------+-----------+
+| abo (8)   | bac (22)  | cab (8)   | dan (10)  | ear (11) | fac (19)  | gal (15)  | hal (13)  | ice (4)   | ja (26)   | ka (25)  | lam (9)  | mac (19)  |
+| abs (12)  | bal (18)  | cal (26)  | dar (15)  | eas (11) | fai (16)  | gam (12)  | ham (11)  | ide (14)  | je (26)   | ke (32)  | lan (17) | mag (18)  |
+| act (16)  | ban (18)  | cam (18)  | dat (8)   | eco (14) | fam (10)  | gar (15)  | han (32)  | ign (5)   | ji (7)    | ki (39)  | lat (20) | mai (19)  |
+| ada (8)   | bar (34)  | can (34)  | dea (13)  | edi (7)  | far (13)  | gen (35)  | har (37)  | ill (16)  | jo (30)   | kn (16)  | law (9)  | mal (21)  |
+| add (12)  | bas (21)  | cap (20)  | deb (12)  | edu (6)  | fas (10)  | geo (17)  | has (7)   | imm (18)  | ju (35)   | ko (17)  | lea (19) | man (45)  |
+```
+
+### export()
+
+Export the processed data to CSV.
+
+**Input:**
+```ruby
+ngrammer.export()
+```
+
+**Output:**
+```
+ngram,count
+con,248
+pro,160
+com,141
+dis,126
+pre,111
 ```
 
 ## API
