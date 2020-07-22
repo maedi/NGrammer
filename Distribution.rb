@@ -5,7 +5,7 @@ class Distribution
 
   def initialize(alphabet)
     # Store the resulting distribution, grouped by unigram.
-    @distribution = alphabet
+    @alphabet = alphabet
     # The percentage of the ngrams relative to the whole.
     @percentages = {}
     # The amount of ngrams to have per category.
@@ -14,13 +14,13 @@ class Distribution
 
   # Default distribution is grouped by unigram.
   def get_distribution
-    @distribution
+    @alphabet
   end
 
   # Flat distribution is not grouped.
   def get_distribution_flat
     distribution_flat = {}
-    @distribution.each do |unigram, elements|
+    @alphabet.each do |unigram, elements|
       elements.each do |ngram, count|
         element = {
           :unigram => unigram,
@@ -42,7 +42,7 @@ class Distribution
   def alphabetically(ngrams, quantity)
 
     # Get percentages of unigrams relative to whole.
-    @percentages = ngrams.create_percentages
+    @percentages = ngrams.get_percentages
 
     # Get quantity of ngrams based on distribution.
     @quantities = create_quantities(@percentages, quantity)
@@ -61,10 +61,10 @@ class Distribution
   def alphabetically_override(ngrams, custom_quantities, default_quantity)
 
     # Create an alphabet.
-    @distribution = ngrams.get_alphabet
+    @alphabet = ngrams.get_alphabet
 
     # Add custom quantities and revert to a default.
-    @distribution.each do |letter, _nil|
+    @alphabet.each do |letter, _nil|
       if custom_quantities.key? letter
         @quantities[letter] = custom_quantities[letter]
       else
@@ -88,14 +88,14 @@ class Distribution
 
   # Distribution ngrams by unigram.
   private def distribute(ngrams)
-    ngrams = ngrams.get
+    ngrams = ngrams.get_ngrams
     ngrams.each do |ngram, count|
       group = ngram[0]
       group_size = @quantities[group]
       # Don't do anything when letter pool full.
-      if @distribution[group].count < group_size
+      if @alphabet[group].count < group_size
         # Add trigram to letter hash.
-        @distribution[group][ngram] = count
+        @alphabet[group][ngram] = count
       end
     end
   end
@@ -103,21 +103,21 @@ class Distribution
   def merge(distribution)
     # Merge distribution into this one.
     new_distro = distribution.get_distribution
-    @distribution.each do |group, elements|
+    @alphabet.each do |group, elements|
       new_distro[group].each do |key, value|
-        @distribution[group][key] = value
+        @alphabet[group][key] = value
       end
     end
     # Sort merged distribution.
-    @distribution.each do |group, elements|
-      @distribution[group] = @distribution[group].sort_by {|_key, value| value}.reverse.to_h
+    @alphabet.each do |group, elements|
+      @alphabet[group] = @alphabet[group].sort_by {|_key, value| value}.reverse.to_h
     end
     # Prune merged distribution.
-    @distribution.each do |group, elements|
+    @alphabet.each do |group, elements|
       group_size = @quantities[group]
-      @distribution[group].each_with_index do |(key, value), index|
+      @alphabet[group].each_with_index do |(key, value), index|
         if index >= group_size
-          @distribution[group].delete(key)
+          @alphabet[group].delete(key)
         end
       end
     end
@@ -126,31 +126,31 @@ class Distribution
   def add(ngrams)
     ngrams.each do |ngram|
       unigram = ngram[0]
-      unless @distribution[unigram][ngram]
-        @distribution[unigram][ngram] = 0
+      unless @alphabet[unigram][ngram]
+        @alphabet[unigram][ngram] = 0
       end
     end
   end
 
   def replace(old_ngram, new_ngram)
     unigram = old_ngram[0]
-    if @distribution[unigram][old_ngram]
-      @distribution[unigram][new_ngram] = @distribution[unigram].delete old_ngram
+    if @alphabet[unigram][old_ngram]
+      @alphabet[unigram][new_ngram] = @alphabet[unigram].delete old_ngram
     end
   end
 
   def remove(ngrams)
     ngrams.each do |ngram|
       unigram = ngram[0]
-      if @distribution[unigram][ngram]
-        @distribution[unigram].delete(ngram)
+      if @alphabet[unigram][ngram]
+        @alphabet[unigram].delete(ngram)
       end
     end
   end
 
   def remove_lowest(group, amount = 1)
     amount.times do
-      group_hash = @distribution[group]
+      group_hash = @alphabet[group]
       group_hash.delete(group_hash.keys.last)
     end
   end
@@ -162,8 +162,8 @@ class Distribution
     headings = []
     cells = []
     # Process distribution.
-    @distribution.each_with_index do |(group, elements), index|
-      unless @distribution[group].empty?
+    @alphabet.each_with_index do |(group, elements), index|
+      unless @alphabet[group].empty?
         # Group.
         percentage = ''
         unless @percentages[group].nil?
@@ -202,15 +202,15 @@ class Distribution
   # Generate CSV of results.
   def export(path)
     # Sort alphabetically.
-    @distribution.each do |letter, ngrams|
-      @distribution[letter] = ngrams.sort.to_h
+    @alphabet.each do |letter, ngrams|
+      @alphabet[letter] = ngrams.sort.to_h
     end
     # Export.
     CSV.open(path, "wb") do |row|
       # Header.
       row << ["letter", "ngram", "count"]
       # Navigate alphabet_group.
-      @distribution.each do |letter, ngrams|
+      @alphabet.each do |letter, ngrams|
         ngrams.each do |ngram, count|
           # Create row.
           row << [letter.to_s, ngram.to_s, count.to_s]

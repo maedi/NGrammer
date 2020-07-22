@@ -1,6 +1,11 @@
 require 'csv'
+#require 'reflekt'
+require_relative '../reflekt/lib/reflekt.rb'
 
 class NGrammer
+
+  prepend Reflekt
+  reflekt_skip :display
 
   def initialize(language, wordlist, blocklist = nil, allowlist = nil, encoding = 'UTF-8')
     # Set alphabet.
