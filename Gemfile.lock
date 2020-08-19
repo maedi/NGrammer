@@ -1,0 +1,29 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    bigdecimal (2.0.0)
+    csv (3.1.7)
+    lemmatizer (0.2.2)
+    oj (3.10.9)
+      bigdecimal (~> 2.0)
+    reflekt (0.2.0)
+      rowdb
+    rowdb (0.4.1)
+      oj
+      rudash
+    rudash (4.1.2)
+    terminal-table (1.8.0)
+      unicode-display_width (~> 1.1, >= 1.1.1)
+    unicode-display_width (1.7.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  csv
+  lemmatizer
+  reflekt
+  terminal-table
+
+BUNDLED WITH
+   2.1.4

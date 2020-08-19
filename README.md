@@ -8,8 +8,9 @@ NGrammer creates ngrams from wordlists.
 
 ## Setup
 
+In terminal run:
 ```
-gem install csv lemmatizer terminal-table
+bundle install
 ```
 
 ## Usage

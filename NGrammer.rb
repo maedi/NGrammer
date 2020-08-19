@@ -1,6 +1,11 @@
 require 'csv'
-#require 'reflekt'
-require_relative '../reflekt/lib/reflekt.rb'
+require 'reflekt'
+
+$ENV = {
+  :reflekt => {
+    :enabled => true
+  }
+}
 
 class NGrammer
 
