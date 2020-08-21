@@ -4,11 +4,11 @@ GEM
     bigdecimal (2.0.0)
     csv (3.1.7)
     lemmatizer (0.2.2)
-    oj (3.10.9)
-      bigdecimal (~> 2.0)
-    reflekt (0.2.0)
+    oj (3.10.12)
+      bigdecimal (>= 1.0, < 3)
+    reflekt (0.3.1)
       rowdb
-    rowdb (0.4.1)
+    rowdb (0.5.1)
       oj
       rudash
     rudash (4.1.2)
