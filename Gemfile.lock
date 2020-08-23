@@ -6,7 +6,7 @@ GEM
     lemmatizer (0.2.2)
     oj (3.10.12)
       bigdecimal (>= 1.0, < 3)
-    reflekt (0.3.1)
+    reflekt (0.7.0)
       rowdb
     rowdb (0.5.1)
       oj

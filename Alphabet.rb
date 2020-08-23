@@ -1,4 +1,5 @@
 require 'csv'
+require 'reflekt'
 
 ################################################################################
 # ALPHABET
@@ -7,6 +8,8 @@ require 'csv'
 ################################################################################
 
 class Alphabet
+
+  prepend Reflekt
 
   def initialize(language)
     @alphabet = {}
