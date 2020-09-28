@@ -22,9 +22,9 @@ class NGrammer
       @blocklist = get_blocklist(blocklist)
     end
     # Set encoding.
-    @encoding    = encoding
+    @encoding = encoding
     # Setup ngrams.
-    @ngrams      = {}
+    @ngrams = {}
     @percentages = {}
   end
 
